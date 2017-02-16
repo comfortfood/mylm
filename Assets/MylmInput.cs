@@ -42,7 +42,6 @@ public class MylmInput : MonoBehaviour
 	private int target = -1;
 	private int chosenInput = -1;
 	private int heldFor = 0;
-	private int inputOrder = 6;
 
 	private bool listening = false;
 	// Flag for listening
@@ -79,96 +78,35 @@ public class MylmInput : MonoBehaviour
 
 	float[] getRawInputs ()
 	{
+//		if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began) {
+//		}
+
 		Quaternion q1 = Input.gyro.attitude;
 
-		Quaternion q;
+		Quaternion q = new Quaternion (q1 [2], q1 [0], q1 [3], q1 [1]);
 
-		switch (inputOrder) {
-		case 0:
-			q = new Quaternion (q1 [0], q1 [1], q1 [2], q1 [3]);
-			break;
-		case 1:
-			q = new Quaternion (q1 [0], q1 [1], q1 [3], q1 [2]);
-			break;
-		case 2:
-			q = new Quaternion (q1 [0], q1 [2], q1 [1], q1 [3]);
-			break;
-		case 3:
-			q = new Quaternion (q1 [0], q1 [2], q1 [3], q1 [1]);
-			break;
-		case 4:
-			q = new Quaternion (q1 [0], q1 [3], q1 [1], q1 [2]);
-			break;
-		case 5:
-			q = new Quaternion (q1 [0], q1 [3], q1 [2], q1 [1]);
-			break;
-		case 6:
-			q = new Quaternion (q1 [1], q1 [0], q1 [2], q1 [3]);
-			break;
-		case 7:
-			q = new Quaternion (q1 [1], q1 [0], q1 [3], q1 [2]);
-			break;
-		case 8:
-			q = new Quaternion (q1 [1], q1 [2], q1 [0], q1 [3]);
-			break;
-		case 9:
-			q = new Quaternion (q1 [1], q1 [2], q1 [3], q1 [0]);
-			break;
-		case 10:
-			q = new Quaternion (q1 [1], q1 [3], q1 [0], q1 [2]);
-			break;
-		case 11:
-			q = new Quaternion (q1 [1], q1 [3], q1 [2], q1 [0]);
-			break;
-		case 12:
-			q = new Quaternion (q1 [2], q1 [0], q1 [1], q1 [3]);
-			break;
-		case 13:
-			q = new Quaternion (q1 [2], q1 [0], q1 [3], q1 [1]);
-			break;
-		case 14:
-			q = new Quaternion (q1 [2], q1 [1], q1 [0], q1 [3]);
-			break;
-		case 15:
-			q = new Quaternion (q1 [2], q1 [1], q1 [3], q1 [0]);
-			break;
-		case 16:
-			q = new Quaternion (q1 [2], q1 [3], q1 [0], q1 [1]);
-			break;
-		case 17:
-			q = new Quaternion (q1 [2], q1 [3], q1 [1], q1 [0]);
-			break;
-		case 18:
-			q = new Quaternion (q1 [3], q1 [0], q1 [1], q1 [2]);
-			break;
-		case 19:
-			q = new Quaternion (q1 [3], q1 [0], q1 [2], q1 [1]);
-			break;
-		case 20:
-			q = new Quaternion (q1 [3], q1 [1], q1 [0], q1 [2]);
-			break;
-		case 21:
-			q = new Quaternion (q1 [3], q1 [1], q1 [2], q1 [0]);
-			break;
-		case 22:
-			q = new Quaternion (q1 [3], q1 [2], q1 [0], q1 [1]);
-			break;
-		default:
-			q = new Quaternion (q1 [3], q1 [2], q1 [1], q1 [0]);
-			break;
+		GameObject g = new GameObject ();
+		Transform t = g.transform;
+		t.localRotation = q;
+
+		float yaw = t.localEulerAngles [1];
+		t.Rotate (0f, yaw, 0f);
+
+		float pitch = t.localEulerAngles [0];
+		t.Rotate (pitch, 0f, 0f);
+
+		float roll = t.localEulerAngles [2];
+		t.Rotate (0f, 0f, roll * -1);
+
+		Destroy (g);
+
+		if (pitch > 180) {
+			pitch -= 360;
 		}
 
-		float yaw = (float)Mathf.Atan2 (2f * (q [2] * q [3] + q [0] * q [1]), 
-			q [0] * q [0] - q [1] * q [1] - q [2] * q [2] + q [3] * q [3]);
-		
-		float pitch = (float)Mathf.Asin (-2f * (q [1] * q [3] - q [0] * q [2]));
-
-		float roll = (float)Mathf.Atan2 (2f * (q [1] * q [2] + q [0] * q [3]),
-			q [0] * q [0] + q [1] * q [1] - q [2] * q [2] - q [3] * q [3]);
-
-		pitch = (pitch + Mathf.PI / 2f) / Mathf.PI;
-		roll = (roll + Mathf.PI) / (2f * Mathf.PI);
-		yaw = (yaw + Mathf.PI) / (2f * Mathf.PI);
+		pitch = (pitch / -57.2958f + Mathf.PI / 2) / Mathf.PI;
+		roll /= 57.2958f * Mathf.PI * 2;
+		yaw /= 57.2958f * Mathf.PI * 2;
 
 		if (listening) {
 
@@ -293,7 +231,6 @@ public class MylmInput : MonoBehaviour
 		"hf:" + heldFor + "\n" +
 		"t:" + target + "\n" +
 		"ci:" + chosenInput + "\n" +
-		"io:" + inputOrder + "\n" +
 		"s:" + score;
 	}
 
