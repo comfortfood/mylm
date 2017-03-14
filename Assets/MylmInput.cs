@@ -60,18 +60,18 @@ public class MylmInput : MonoBehaviour
 
 //		if (Application.HasUserAuthorization(UserAuthorization.Microphone)) {
 			
-		selectedDevice = Microphone.devices [0].ToString ();
-		micSelected = true;
-		GetMicCaps ();
-
-		listening = true;
-		setUpMic ();
-
-		// Estimates bufer len, based on pitchTimeInterval value
-
-		int bufferLen = (int)Mathf.Round (AudioSettings.outputSampleRate * pitchTimeInterval / 1000f);
-		Debug.Log ("Buffer len: " + bufferLen);
-		ssData = new float[bufferLen];
+//		selectedDevice = Microphone.devices [0].ToString ();
+//		micSelected = true;
+//		GetMicCaps ();
+//
+//		listening = true;
+//		setUpMic ();
+//
+//		// Estimates bufer len, based on pitchTimeInterval value
+//
+//		int bufferLen = (int)Mathf.Round (AudioSettings.outputSampleRate * pitchTimeInterval / 1000f);
+//		Debug.Log ("Buffer len: " + bufferLen);
+//		ssData = new float[bufferLen];
 //		}
 	}
 
